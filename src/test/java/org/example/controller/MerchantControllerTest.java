@@ -1,0 +1,193 @@
+package org.example.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.MerchantRequestDto;
+import org.example.dto.MerchantResponseDto;
+import org.example.service.MerchantService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(MerchantController.class)
+@WithMockUser(username = "admin", password = "password", roles = "USER")
+public class MerchantControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private MerchantService merchantService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private MerchantRequestDto requestDto;
+    private MerchantResponseDto responseDto;
+
+    @BeforeEach
+    void setUp() {
+        requestDto = new MerchantRequestDto();
+        requestDto.setMerchantName("Test Merchant");
+        requestDto.setMerchantAddress("123 Test St");
+        requestDto.setMerchantContactNumber("+1234567890");
+        requestDto.setMerchantEmailId("test@example.com");
+        requestDto.setMerchantCategory("Retail");
+        requestDto.setMetadata("{\"key\": \"value\"}");
+
+        responseDto = new MerchantResponseDto();
+        responseDto.setMerchantId(1L);
+        responseDto.setMerchantName("Test Merchant");
+        responseDto.setMerchantAddress("123 Test St");
+        responseDto.setMerchantContactNumber("+1234567890");
+        responseDto.setMerchantEmailId("test@example.com");
+        responseDto.setMerchantCategory("Retail");
+        responseDto.setMetadata("{\"key\": \"value\"}");
+        responseDto.setCreatedAt(Timestamp.valueOf("2023-01-01 10:00:00"));
+    }
+
+    @Test
+    void createMerchant_ShouldReturnCreatedMerchant() throws Exception {
+        when(merchantService.createMerchant(any(MerchantRequestDto.class))).thenReturn(responseDto);
+
+        mockMvc.perform(post("/api/merchants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+                .with(csrf()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.merchantId").value(1L))
+                .andExpect(jsonPath("$.merchantName").value("Test Merchant"))
+                .andExpect(jsonPath("$.merchantEmailId").value("test@example.com"));
+
+        verify(merchantService, times(1)).createMerchant(any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void createMerchant_ShouldReturnBadRequest_WhenValidationFails() throws Exception {
+        MerchantRequestDto invalidRequest = new MerchantRequestDto();
+        invalidRequest.setMerchantName(""); // Invalid: blank name
+
+        mockMvc.perform(post("/api/merchants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .with(csrf()))
+                .andExpect(status().isBadRequest());
+
+        verify(merchantService, never()).createMerchant(any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void getAllMerchants_ShouldReturnListOfMerchants() throws Exception {
+        List<MerchantResponseDto> merchants = Arrays.asList(responseDto);
+        when(merchantService.getAllMerchants()).thenReturn(merchants);
+
+        mockMvc.perform(get("/api/merchants"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].merchantId").value(1L))
+                .andExpect(jsonPath("$[0].merchantName").value("Test Merchant"));
+
+        verify(merchantService, times(1)).getAllMerchants();
+    }
+
+    @Test
+    void getMerchantById_ShouldReturnMerchant() throws Exception {
+        when(merchantService.getMerchantById(1L)).thenReturn(responseDto);
+
+        mockMvc.perform(get("/api/merchants/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.merchantId").value(1L))
+                .andExpect(jsonPath("$.merchantName").value("Test Merchant"));
+
+        verify(merchantService, times(1)).getMerchantById(1L);
+    }
+
+    @Test
+    void getMerchantById_ShouldReturnNotFound_WhenMerchantDoesNotExist() throws Exception {
+        when(merchantService.getMerchantById(1L)).thenThrow(new RuntimeException("Merchant not found with id: 1"));
+
+        mockMvc.perform(get("/api/merchants/1"))
+                .andExpect(status().isNotFound());
+
+        verify(merchantService, times(1)).getMerchantById(1L);
+    }
+
+    @Test
+    void updateMerchant_ShouldReturnUpdatedMerchant() throws Exception {
+        when(merchantService.updateMerchant(eq(1L), any(MerchantRequestDto.class))).thenReturn(responseDto);
+
+        mockMvc.perform(put("/api/merchants/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.merchantId").value(1L))
+                .andExpect(jsonPath("$.merchantName").value("Test Merchant"));
+
+        verify(merchantService, times(1)).updateMerchant(eq(1L), any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void updateMerchant_ShouldReturnNotFound_WhenMerchantDoesNotExist() throws Exception {
+        when(merchantService.updateMerchant(eq(1L), any(MerchantRequestDto.class)))
+                .thenThrow(new RuntimeException("Merchant not found with id: 1"));
+
+        mockMvc.perform(put("/api/merchants/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        verify(merchantService, times(1)).updateMerchant(eq(1L), any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void updateMerchant_ShouldReturnBadRequest_WhenValidationFails() throws Exception {
+        MerchantRequestDto invalidRequest = new MerchantRequestDto();
+        invalidRequest.setMerchantName(""); // Invalid
+
+        mockMvc.perform(put("/api/merchants/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .with(csrf()))
+                .andExpect(status().isBadRequest());
+
+        verify(merchantService, never()).updateMerchant(any(Long.class), any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void deleteMerchant_ShouldReturnNoContent() throws Exception {
+        doNothing().when(merchantService).deleteMerchant(1L);
+
+        mockMvc.perform(delete("/api/merchants/1")
+                .with(csrf()))
+                .andExpect(status().isNoContent());
+
+        verify(merchantService, times(1)).deleteMerchant(1L);
+    }
+
+    @Test
+    void deleteMerchant_ShouldReturnNotFound_WhenMerchantDoesNotExist() throws Exception {
+        doThrow(new RuntimeException("Merchant not found with id: 1")).when(merchantService).deleteMerchant(1L);
+
+        mockMvc.perform(delete("/api/merchants/1")
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        verify(merchantService, times(1)).deleteMerchant(1L);
+    }
+}

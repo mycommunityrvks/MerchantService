@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Application Service
+  app:
+    build: .
+    container_name: nikat-merchant-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/merchantdb
+      - SPRING_DATASOURCE_USERNAME=merchant_user
+      - SPRING_DATASOURCE_PASSWORD=merchant_password
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - merchant-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: nikat-merchant-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=merchantdb
+      - MYSQL_USER=merchant_user
+      - MYSQL_PASSWORD=merchant_password
+      - MYSQL_INITDB_SKIP_TZINFO=1
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    networks:
+      - merchant-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "merchant_user", "-pmerchant_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  merchant-network:
+    driver: bridge
+
