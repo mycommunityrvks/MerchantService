@@ -1,11 +1,11 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
+# Use modern OpenJDK 17 image
+FROM eclipse-temurin:17-jdk-jammy
 
 # Set working directory
 WORKDIR /app
 
 # Copy the JAR file
-COPY target/NikatMerchant-1.0-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
 # Expose port 8080
 EXPOSE 8080

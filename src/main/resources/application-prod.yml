@@ -28,8 +28,6 @@ spring:
         jdbc:
           batch_size: 20
           fetch_size: 50
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:prod}
 
 springdoc:
   api-docs:
@@ -47,4 +45,3 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-

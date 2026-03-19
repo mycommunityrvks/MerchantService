@@ -37,8 +37,6 @@ services:
       - MYSQL_INITDB_SKIP_TZINFO=1
     volumes:
       - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
     restart: unless-stopped
     networks:
       - merchant-network
@@ -55,4 +53,3 @@ volumes:
 networks:
   merchant-network:
     driver: bridge
-
