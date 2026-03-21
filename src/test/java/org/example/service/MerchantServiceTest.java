@@ -70,7 +70,7 @@ public class MerchantServiceTest {
         merchant.setPersonAge(30);
         merchant.setYearsOfExperience(5);
         merchant.setArea("Downtown");
-        merchant.setMerchantAddress("123 Test St");
+        merchant.setAddress("123 Test St");
         merchant.setLat(12.345);
         merchant.setLon(67.890);
         merchant.setHomeServiceAvailable(true);
