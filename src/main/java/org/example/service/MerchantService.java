@@ -38,12 +38,26 @@ public class MerchantService {
         Merchant existingMerchant = merchantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Merchant not found with id: " + id));
         // Update fields
-        existingMerchant.setMerchantName(requestDto.getMerchantName());
-        existingMerchant.setMerchantAddress(requestDto.getMerchantAddress());
-        existingMerchant.setMerchantContactNumber(requestDto.getMerchantContactNumber());
-        existingMerchant.setMerchantEmailId(requestDto.getMerchantEmailId());
-        existingMerchant.setMerchantCategory(requestDto.getMerchantCategory());
-        existingMerchant.setMetadata(requestDto.getMetadata());
+        existingMerchant.setBusinessName(requestDto.getBusinessName());
+        existingMerchant.setMerchantEmail(requestDto.getMerchantEmail());
+        existingMerchant.setPrimaryPhone(requestDto.getPrimaryPhone());
+        existingMerchant.setAlternatePhone(requestDto.getAlternatePhone());
+        existingMerchant.setCategory(requestDto.getCategory());
+        existingMerchant.setSubCategory(requestDto.getSubCategory());
+        existingMerchant.setBusinessType(requestDto.getBusinessType());
+        existingMerchant.setAddress(requestDto.getAddress());
+        existingMerchant.setArea(requestDto.getArea());
+        existingMerchant.setLat(requestDto.getLat());
+        existingMerchant.setLon(requestDto.getLon());
+        existingMerchant.setPersonAge(requestDto.getPersonAge());
+        existingMerchant.setYearsOfExperience(requestDto.getYearsOfExperience());
+        existingMerchant.setWhatAppAvailable(requestDto.getWhatAppAvailable());
+        existingMerchant.setHomeServiceAvailable(requestDto.getHomeServiceAvailable());
+        existingMerchant.setWorkingDays(requestDto.getWorkingDays());
+        existingMerchant.setWorkingHours(requestDto.getWorkingHours());
+        existingMerchant.setAcquisitionSource(requestDto.getAcquisitionSource());
+        existingMerchant.setAddedBy(requestDto.getAddedBy());
+        existingMerchant.setMetaData(requestDto.getMetaData());
         Merchant updatedMerchant = merchantRepository.save(existingMerchant);
         return mapToResponseDto(updatedMerchant);
     }
@@ -57,25 +71,53 @@ public class MerchantService {
 
     private Merchant mapToEntity(MerchantRequestDto dto) {
         Merchant merchant = new Merchant();
-        merchant.setMerchantName(dto.getMerchantName());
-        merchant.setMerchantAddress(dto.getMerchantAddress());
-        merchant.setMerchantContactNumber(dto.getMerchantContactNumber());
-        merchant.setMerchantEmailId(dto.getMerchantEmailId());
-        merchant.setMerchantCategory(dto.getMerchantCategory());
-        merchant.setMetadata(dto.getMetadata());
+        merchant.setBusinessName(dto.getBusinessName());
+        merchant.setMerchantEmail(dto.getMerchantEmail());
+        merchant.setPrimaryPhone(dto.getPrimaryPhone());
+        merchant.setAlternatePhone(dto.getAlternatePhone());
+        merchant.setCategory(dto.getCategory());
+        merchant.setSubCategory(dto.getSubCategory());
+        merchant.setBusinessType(dto.getBusinessType());
+        merchant.setAddress(dto.getAddress());
+        merchant.setArea(dto.getArea());
+        merchant.setLat(dto.getLat());
+        merchant.setLon(dto.getLon());
+        merchant.setPersonAge(dto.getPersonAge());
+        merchant.setYearsOfExperience(dto.getYearsOfExperience());
+        merchant.setWhatAppAvailable(dto.getWhatAppAvailable());
+        merchant.setHomeServiceAvailable(dto.getHomeServiceAvailable());
+        merchant.setWorkingDays(dto.getWorkingDays());
+        merchant.setWorkingHours(dto.getWorkingHours());
+        merchant.setAcquisitionSource(dto.getAcquisitionSource());
+        merchant.setAddedBy(dto.getAddedBy());
+        merchant.setMetaData(dto.getMetaData());
         return merchant;
     }
 
     private MerchantResponseDto mapToResponseDto(Merchant merchant) {
         return new MerchantResponseDto(
                 merchant.getMerchantId(),
-                merchant.getMerchantName(),
-                merchant.getMerchantAddress(),
-                merchant.getMerchantContactNumber(),
-                merchant.getMerchantEmailId(),
-                merchant.getMerchantCategory(),
-                merchant.getMetadata(),
-                merchant.getCreatedAt()
+                merchant.getBusinessName(),
+                merchant.getBusinessType(),
+                merchant.getCategory(),
+                merchant.getSubCategory(),
+                merchant.getMerchantEmail(),
+                merchant.getPrimaryPhone(),
+                merchant.getAlternatePhone(),
+                merchant.getAddress(),
+                merchant.getArea(),
+                merchant.getLat(),
+                merchant.getLon(),
+                merchant.getPersonAge(),
+                merchant.getYearsOfExperience(),
+                merchant.getWhatAppAvailable(),
+                merchant.getHomeServiceAvailable(),
+                merchant.getWorkingDays(),
+                merchant.getWorkingHours(),
+                merchant.getAcquisitionSource(),
+                merchant.getAddedBy(),
+                merchant.getDateAdded(),
+                merchant.getMetaData()
         );
     }
 }

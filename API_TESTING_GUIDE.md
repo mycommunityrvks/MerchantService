@@ -22,12 +22,26 @@ Your Spring Boot application has 5 REST API endpoints for managing merchants. Al
 ### Create/Update Merchant - Request Body
 ```json
 {
-  "merchantName": "Acme Store",
-  "merchantAddress": "123 Main St, City, Country",
-  "merchantContactNumber": "+1234567890",
-  "merchantEmailId": "contact@acmestore.com",
-  "merchantCategory": "Electronics",
-  "metadata": "{\"storeType\": \"retail\"}"
+  "businessName": "Acme Store",
+  "merchantEmail": "merchant@acmestore.com",
+  "primaryPhone": "+1234567890",
+  "alternatePhone": "+0987654321",
+  "category": "Electronics",
+  "subCategory": "Mobile",
+  "businessType": "Retail",
+  "address": "123 Main St, City, Country",
+  "area": "Downtown",
+  "lat": 12.345,
+  "lon": 67.890,
+  "personAge": 30,
+  "yearsOfExperience": 5,
+  "whatAppAvailable": true,
+  "homeServiceAvailable": true,
+  "workingDays": "Mon,Tue,Wed,Thu,Fri",
+  "workingHours": "10AM-7PM",
+  "acquisitionSource": "Online",
+  "addedBy": "Admin",
+  "metaData": "{\"storeType\": \"retail\"}"
 }
 ```
 
@@ -35,13 +49,27 @@ Your Spring Boot application has 5 REST API endpoints for managing merchants. Al
 ```json
 {
   "merchantId": 1,
-  "merchantName": "Acme Store",
-  "merchantAddress": "123 Main St, City, Country",
-  "merchantContactNumber": "+1234567890",
-  "merchantEmailId": "contact@acmestore.com",
-  "merchantCategory": "Electronics",
-  "metadata": "{\"storeType\": \"retail\"}",
-  "createdAt": "2026-03-17T10:30:00.000+00:00"
+  "businessName": "Acme Store",
+  "merchantEmail": "merchant@acmestore.com",
+  "primaryPhone": "+1234567890",
+  "alternatePhone": "+0987654321",
+  "category": "Electronics",
+  "subCategory": "Mobile",
+  "businessType": "Retail",
+  "address": "123 Main St, City, Country",
+  "area": "Downtown",
+  "lat": 12.345,
+  "lon": 67.890,
+  "personAge": 30,
+  "yearsOfExperience": 5,
+  "whatAppAvailable": true,
+  "homeServiceAvailable": true,
+  "workingDays": "Mon,Tue,Wed,Thu,Fri",
+  "workingHours": "10AM-7PM",
+  "acquisitionSource": "Online",
+  "addedBy": "Admin",
+  "dateAdded": "2026-03-17T10:30:00.000+00:00",
+  "metaData": "{\"storeType\": \"retail\"}"
 }
 ```
 
@@ -99,12 +127,26 @@ curl -X GET http://localhost:8080/api/merchants -u admin:password
 curl -X POST http://localhost:8080/api/merchants \
   -H "Content-Type: application/json" \
   -d "{
-    \"merchantName\": \"Acme Store\",
-    \"merchantAddress\": \"123 Main St\",
-    \"merchantContactNumber\": \"+1234567890\",
-    \"merchantEmailId\": \"contact@acmestore.com\",
-    \"merchantCategory\": \"Electronics\",
-    \"metadata\": \"\"
+    \"businessName\": \"Acme Store\",
+    \"merchantEmail\": \"merchant@acmestore.com\",
+    \"primaryPhone\": \"+1234567890\",
+    \"alternatePhone\": \"+0987654321\",
+    \"category\": \"Electronics\",
+    \"subCategory\": \"Mobile\",
+    \"businessType\": \"Retail\",
+    \"address\": \"123 Main St, City, Country\",
+    \"area\": \"Downtown\",
+    \"lat\": 12.345,
+    \"lon\": 67.890,
+    \"personAge\": 30,
+    \"yearsOfExperience\": 5,
+    \"whatAppAvailable\": true,
+    \"homeServiceAvailable\": true,
+    \"workingDays\": \"Mon,Tue,Wed,Thu,Fri\",
+    \"workingHours\": \"10AM-7PM\",
+    \"acquisitionSource\": \"Online\",
+    \"addedBy\": \"Admin\",
+    \"metaData\": \"\"
   }"
 ```
 
@@ -123,12 +165,26 @@ curl -X GET http://localhost:8080/api/merchants/1
 curl -X PUT http://localhost:8080/api/merchants/1 \
   -H "Content-Type: application/json" \
   -d "{
-    \"merchantName\": \"Updated Store Name\",
-    \"merchantAddress\": \"456 New St\",
-    \"merchantContactNumber\": \"+9876543210\",
-    \"merchantEmailId\": \"newemail@acmestore.com\",
-    \"merchantCategory\": \"Retail\",
-    \"metadata\": \"\"
+    \"businessName\": \"Updated Store Name\",
+    \"merchantEmail\": \"merchant@acmestore.com\",
+    \"primaryPhone\": \"+1234567890\",
+    \"alternatePhone\": \"+0987654321\",
+    \"category\": \"Electronics\",
+    \"subCategory\": \"Mobile\",
+    \"businessType\": \"Retail\",
+    \"address\": \"456 New St, City, Country\",
+    \"area\": \"Downtown\",
+    \"lat\": 12.346,
+    \"lon\": 67.891,
+    \"personAge\": 30,
+    \"yearsOfExperience\": 5,
+    \"whatAppAvailable\": true,
+    \"homeServiceAvailable\": true,
+    \"workingDays\": \"Mon,Tue,Wed,Thu,Fri\",
+    \"workingHours\": \"10AM-7PM\",
+    \"acquisitionSource\": \"Online\",
+    \"addedBy\": \"Admin\",
+    \"metaData\": \"\"
   }"
 ```
 
@@ -154,7 +210,7 @@ curl -X DELETE http://localhost:8080/api/merchants/1
 
 **Data Location**: MySQL Database running in Docker container
 - **Database Name**: `merchantdb`
-- **Table Name**: `merchant`
+- **Table Name**: `merchants`
 - **Host**: `localhost`
 - **Port**: `3307`
 - **Username**: `user`
@@ -162,15 +218,29 @@ curl -X DELETE http://localhost:8080/api/merchants/1
 
 ### Database Schema
 ```sql
-CREATE TABLE merchant (
+CREATE TABLE merchants (
   merchant_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  merchant_name VARCHAR(255) NOT NULL,
-  merchant_address VARCHAR(255) NOT NULL,
-  merchant_contact_number VARCHAR(20) NOT NULL,
-  merchant_email_id VARCHAR(255) NOT NULL,
-  merchant_category VARCHAR(100) NOT NULL,
-  metadata LONGTEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  business_name VARCHAR(255) NOT NULL,
+  merchant_email VARCHAR(255) NOT NULL UNIQUE,
+  primary_phone VARCHAR(20) NOT NULL,
+  alternate_phone VARCHAR(20),
+  category VARCHAR(100) NOT NULL,
+  sub_category VARCHAR(100),
+  business_type VARCHAR(100),
+  address VARCHAR(255) NOT NULL,
+  area VARCHAR(255),
+  lat DOUBLE,
+  lon DOUBLE,
+  person_age INT,
+  years_of_experience INT,
+  whatsapp_available BOOLEAN,
+  home_service_available BOOLEAN,
+  working_days VARCHAR(255),
+  working_hours VARCHAR(50),
+  acquisition_source VARCHAR(255),
+  added_by VARCHAR(255),
+  date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  meta_data LONGTEXT
 )
 ```
 
@@ -192,16 +262,16 @@ When prompted, enter password: `password`
 USE merchantdb;
 
 -- View all merchants
-SELECT * FROM merchant;
+SELECT * FROM merchants;
 
 -- View specific merchant
-SELECT * FROM merchant WHERE merchant_id = 1;
+SELECT * FROM merchants WHERE merchant_id = 1;
 
 -- Count total merchants
-SELECT COUNT(*) FROM merchant;
+SELECT COUNT(*) FROM merchants;
 
 -- View merchant details in formatted way
-SELECT merchant_id, merchant_name, merchant_email_id, merchant_category, created_at FROM merchant;
+SELECT merchant_id, business_name, merchant_email, category, date_added FROM merchants;
 
 -- Exit
 EXIT;
@@ -218,7 +288,7 @@ EXIT;
    - **Username**: `user`
    - **Password**: `password`
 3. Test the connection
-4. Browse the `merchantdb` database → `merchant` table
+4. Browse the `merchantdb` database → `merchants` table
 5. View/edit data in the GUI
 
 ---
@@ -270,7 +340,7 @@ Open: `http://localhost:8080/swagger-ui.html`
 
 ### Step 5: Verify Data in Database
 ```bash
-docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT * FROM merchant;"
+docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT * FROM merchants;"
 ```
 
 ---
@@ -278,12 +348,26 @@ docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT * FROM mer
 ## ✅ Validation Rules
 
 The API validates input with these rules:
-- `merchantName`: Required, cannot be blank
-- `merchantAddress`: Required, cannot be blank
-- `merchantContactNumber`: Required, cannot be blank
-- `merchantEmailId`: Required, must be valid email format
-- `merchantCategory`: Required, cannot be blank
-- `metadata`: Optional field
+- `primaryPhone`: Required, cannot be blank
+- `alternatePhone`: Optional
+- `merchantEmail`: Required, cannot be blank, must be valid email format
+- `whatAppAvailable`: Optional boolean (pass `true` or `false`, not `1` or `0`)
+- `businessName`: Required, cannot be blank
+- `businessType`: Optional
+- `category`: Required, cannot be blank
+- `subCategory`: Optional
+- `personAge`: Optional integer
+- `yearsOfExperience`: Optional integer
+- `area`: Optional
+- `address`: Required, cannot be blank
+- `lat`: Optional double
+- `lon`: Optional double
+- `homeServiceAvailable`: Optional boolean (pass `true` or `false`, not `1` or `0`)
+- `workingDays`: Optional string
+- `workingHours`: Optional string
+- `acquisitionSource`: Optional
+- `addedBy`: Optional
+- `metaData`: Optional JSON string
 
 Invalid requests will return **400 Bad Request** with error details.
 
@@ -315,13 +399,55 @@ Invalid requests will return **400 Bad Request** with error details.
 # 1. Create first merchant
 curl -X POST http://localhost:8080/api/merchants \
   -H "Content-Type: application/json" \
-  -d '{"merchantName":"Store1","merchantAddress":"Addr1","merchantContactNumber":"+111","merchantEmailId":"store1@test.com","merchantCategory":"Cat1"}'
+  -d '{
+    "businessName": "Store1",
+    "merchantEmail": "merchant1@test.com",
+    "primaryPhone": "+1234567890",
+    "alternatePhone": "+0987654321",
+    "category": "Electronics",
+    "subCategory": "Mobile",
+    "businessType": "Retail",
+    "address": "123 Main St",
+    "area": "Downtown",
+    "lat": 12.345,
+    "lon": 67.890,
+    "personAge": 30,
+    "yearsOfExperience": 5,
+    "whatAppAvailable": true,
+    "homeServiceAvailable": true,
+    "workingDays": "Mon,Tue,Wed,Thu,Fri",
+    "workingHours": "10AM-7PM",
+    "acquisitionSource": "Online",
+    "addedBy": "Admin",
+    "metaData": "{}"
+  }'
 # Returns: {"merchantId":1, ...}
 
 # 2. Create second merchant
 curl -X POST http://localhost:8080/api/merchants \
   -H "Content-Type: application/json" \
-  -d '{"merchantName":"Store2","merchantAddress":"Addr2","merchantContactNumber":"+222","merchantEmailId":"store2@test.com","merchantCategory":"Cat2"}'
+  -d '{
+    "businessName": "Store2",
+    "merchantEmail": "merchant2@test.com",
+    "primaryPhone": "+0987654321",
+    "alternatePhone": "+1234567890",
+    "category": "Groceries",
+    "subCategory": "Fruits",
+    "businessType": "Wholesale",
+    "address": "456 New St",
+    "area": "Uptown",
+    "lat": 13.456,
+    "lon": 68.901,
+    "personAge": 35,
+    "yearsOfExperience": 10,
+    "whatAppAvailable": false,
+    "homeServiceAvailable": false,
+    "workingDays": "Mon,Tue,Wed,Thu,Fri,Sat",
+    "workingHours": "9AM-8PM",
+    "acquisitionSource": "Referral",
+    "addedBy": "Manager",
+    "metaData": "{}"
+  }'
 # Returns: {"merchantId":2, ...}
 
 # 3. Get all merchants
@@ -329,7 +455,7 @@ curl -X GET http://localhost:8080/api/merchants
 # Returns: [{"merchantId":1, ...}, {"merchantId":2, ...}]
 
 # 4. Check data in DB
-docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT COUNT(*) FROM merchant;"
+docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT COUNT(*) FROM merchants;"
 # Returns: 2
 ```
 
@@ -342,3 +468,72 @@ docker exec -it mysql-merchant mysql -u user -p merchantdb -e "SELECT COUNT(*) F
 3. **Check database integrity** using MySQL CLI or GUI tools
 4. **Add authentication** (SecurityConfig is already configured)
 5. **Add unit/integration tests** in the test folder
+
+---
+
+## Database Schema Changes for Production
+
+When deploying to AWS RDS, **do not use `ddl-auto: update`** as it can cause issues. Instead:
+
+1. **Set `ddl-auto: validate`** in `application-prod.yml` (already done)
+2. **Apply schema changes manually** using SQL scripts
+
+#### Required Schema Changes for Current Deployment:
+
+```sql
+-- Connect to your AWS RDS MySQL instance
+-- Run these commands to add the new merchant fields:
+
+USE merchantdb;
+
+-- Add new columns to existing merchants table
+ALTER TABLE merchants 
+ADD COLUMN business_name VARCHAR(255) NOT NULL,
+ADD COLUMN merchant_email VARCHAR(255) NOT NULL UNIQUE,
+ADD COLUMN primary_phone VARCHAR(20) NOT NULL,
+ADD COLUMN alternate_phone VARCHAR(20),
+ADD COLUMN category VARCHAR(100) NOT NULL,
+ADD COLUMN sub_category VARCHAR(100),
+ADD COLUMN business_type VARCHAR(100),
+ADD COLUMN address VARCHAR(255) NOT NULL,
+ADD COLUMN area VARCHAR(255),
+ADD COLUMN lat DOUBLE,
+ADD COLUMN lon DOUBLE,
+ADD COLUMN person_age INT,
+ADD COLUMN years_of_experience INT,
+ADD COLUMN whatsapp_available BOOLEAN,
+ADD COLUMN home_service_available BOOLEAN,
+ADD COLUMN working_days VARCHAR(255),
+ADD COLUMN working_hours VARCHAR(50),
+ADD COLUMN acquisition_source VARCHAR(255),
+ADD COLUMN added_by VARCHAR(255),
+ADD COLUMN date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN meta_data LONGTEXT;
+
+-- Note: merchant_id should already be AUTO_INCREMENT PRIMARY KEY
+```
+
+#### How to Apply Changes:
+
+1. **Connect to RDS**: Use MySQL Workbench, DBeaver, or AWS RDS console
+2. **Backup first**: `mysqldump -h your-rds-endpoint -u username -p merchantdb > backup.sql`
+3. **Run the ALTER statements** above
+4. **Test the application** with `spring.profiles.active=prod`
+
+#### For Future Changes:
+
+Consider adding **Flyway** or **Liquibase** for proper database migrations:
+
+```xml
+<!-- Add to pom.xml -->
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-mysql</artifactId>
+</dependency>
+```
+
+Then create migration files in `src/main/resources/db/migration/V1__Initial_schema.sql`

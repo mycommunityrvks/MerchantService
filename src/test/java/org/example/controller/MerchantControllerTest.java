@@ -43,22 +43,50 @@ public class MerchantControllerTest {
     @BeforeEach
     void setUp() {
         requestDto = new MerchantRequestDto();
-        requestDto.setMerchantName("Test Merchant");
-        requestDto.setMerchantAddress("123 Test St");
-        requestDto.setMerchantContactNumber("+1234567890");
-        requestDto.setMerchantEmailId("test@example.com");
-        requestDto.setMerchantCategory("Retail");
-        requestDto.setMetadata("{\"key\": \"value\"}");
+        requestDto.setPrimaryPhone("+1234567890");
+        requestDto.setAlternatePhone("+0987654321");
+        requestDto.setMerchantEmail("merchant@test.com");
+        requestDto.setWhatAppAvailable(true);
+        requestDto.setBusinessName("Test Business");
+        requestDto.setBusinessType("Retail");
+        requestDto.setCategory("Electronics");
+        requestDto.setSubCategory("Mobile");
+        requestDto.setPersonAge(30);
+        requestDto.setYearsOfExperience(5);
+        requestDto.setArea("Downtown");
+        requestDto.setAddress("123 Test St");
+        requestDto.setLat(12.345);
+        requestDto.setLon(67.890);
+        requestDto.setHomeServiceAvailable(true);
+        requestDto.setWorkingDays("Mon,Tue,Wed,Thu,Fri");
+        requestDto.setWorkingHours("10AM-7PM");
+        requestDto.setAcquisitionSource("Online");
+        requestDto.setAddedBy("Admin");
+        requestDto.setMetaData("{\"key\": \"value\"}");
 
         responseDto = new MerchantResponseDto();
         responseDto.setMerchantId(1L);
-        responseDto.setMerchantName("Test Merchant");
-        responseDto.setMerchantAddress("123 Test St");
-        responseDto.setMerchantContactNumber("+1234567890");
-        responseDto.setMerchantEmailId("test@example.com");
-        responseDto.setMerchantCategory("Retail");
-        responseDto.setMetadata("{\"key\": \"value\"}");
-        responseDto.setCreatedAt(Timestamp.valueOf("2023-01-01 10:00:00"));
+        responseDto.setPrimaryPhone("+1234567890");
+        responseDto.setAlternatePhone("+0987654321");
+        responseDto.setMerchantEmail("merchant@test.com");
+        responseDto.setWhatAppAvailable(true);
+        responseDto.setBusinessName("Test Business");
+        responseDto.setBusinessType("Retail");
+        responseDto.setCategory("Electronics");
+        responseDto.setSubCategory("Mobile");
+        responseDto.setPersonAge(30);
+        responseDto.setYearsOfExperience(5);
+        responseDto.setArea("Downtown");
+        responseDto.setAddress("123 Test St");
+        responseDto.setLat(12.345);
+        responseDto.setLon(67.890);
+        responseDto.setHomeServiceAvailable(true);
+        responseDto.setWorkingDays("Mon,Tue,Wed,Thu,Fri");
+        responseDto.setWorkingHours("10AM-7PM");
+        responseDto.setAcquisitionSource("Online");
+        responseDto.setDateAdded(Timestamp.valueOf("2023-01-01 10:00:00"));
+        responseDto.setAddedBy("Admin");
+        responseDto.setMetaData("{\"key\": \"value\"}");
     }
 
     @Test
@@ -71,8 +99,8 @@ public class MerchantControllerTest {
                 .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.merchantId").value(1L))
-                .andExpect(jsonPath("$.merchantName").value("Test Merchant"))
-                .andExpect(jsonPath("$.merchantEmailId").value("test@example.com"));
+                .andExpect(jsonPath("$.businessName").value("Test Business"))
+                .andExpect(jsonPath("$.merchantEmail").value("merchant@test.com"));
 
         verify(merchantService, times(1)).createMerchant(any(MerchantRequestDto.class));
     }
@@ -80,7 +108,7 @@ public class MerchantControllerTest {
     @Test
     void createMerchant_ShouldReturnBadRequest_WhenValidationFails() throws Exception {
         MerchantRequestDto invalidRequest = new MerchantRequestDto();
-        invalidRequest.setMerchantName(""); // Invalid: blank name
+        invalidRequest.setBusinessName(""); // Invalid: blank name
 
         mockMvc.perform(post("/api/merchants")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +127,7 @@ public class MerchantControllerTest {
         mockMvc.perform(get("/api/merchants"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].merchantId").value(1L))
-                .andExpect(jsonPath("$[0].merchantName").value("Test Merchant"));
+                .andExpect(jsonPath("$[0].businessName").value("Test Business"));
 
         verify(merchantService, times(1)).getAllMerchants();
     }
@@ -111,7 +139,7 @@ public class MerchantControllerTest {
         mockMvc.perform(get("/api/merchants/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.merchantId").value(1L))
-                .andExpect(jsonPath("$.merchantName").value("Test Merchant"));
+                .andExpect(jsonPath("$.businessName").value("Test Business"));
 
         verify(merchantService, times(1)).getMerchantById(1L);
     }
@@ -136,7 +164,7 @@ public class MerchantControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.merchantId").value(1L))
-                .andExpect(jsonPath("$.merchantName").value("Test Merchant"));
+                .andExpect(jsonPath("$.businessName").value("Test Business"));
 
         verify(merchantService, times(1)).updateMerchant(eq(1L), any(MerchantRequestDto.class));
     }
@@ -158,7 +186,7 @@ public class MerchantControllerTest {
     @Test
     void updateMerchant_ShouldReturnBadRequest_WhenValidationFails() throws Exception {
         MerchantRequestDto invalidRequest = new MerchantRequestDto();
-        invalidRequest.setMerchantName(""); // Invalid
+        invalidRequest.setBusinessName(""); // Invalid
 
         mockMvc.perform(put("/api/merchants/1")
                 .contentType(MediaType.APPLICATION_JSON)

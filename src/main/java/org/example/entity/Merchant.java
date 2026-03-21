@@ -22,31 +22,79 @@ public class Merchant {
     @Column(name = "merchant_id")
     private Long merchantId;
 
-    @NotBlank(message = "Merchant name is required")
-    @Column(name = "merchant_name", nullable = false)
-    private String merchantName;
+    // Business Info
+    @NotBlank(message = "Business name is required")
+    @Column(name = "business_name", nullable = false)
+    private String businessName;
 
-    @NotBlank(message = "Merchant address is required")
-    @Column(name = "merchant_address", nullable = false)
-    private String merchantAddress;
+    @Column(name = "business_type")
+    private String businessType;
 
-    @NotBlank(message = "Merchant contact number is required")
-    @Column(name = "merchant_contact_number", nullable = false)
-    private String merchantContactNumber;
+    @NotBlank(message = "Category is required")
+    @Column(name = "category", nullable = false)
+    private String category;
 
+    @Column(name = "sub_category")
+    private String subCategory;
+
+    // Contact Info
     @NotBlank(message = "Merchant email is required")
     @Email(message = "Invalid email format")
-    @Column(name = "merchant_email_id", nullable = false, unique = true)
-    private String merchantEmailId;
+    @Column(name = "merchant_email", nullable = false, unique = true)
+    private String merchantEmail;
 
-    @NotBlank(message = "Merchant category is required")
-    @Column(name = "merchant_category", nullable = false)
-    private String merchantCategory;
+    @NotBlank(message = "Primary phone is required")
+    @Column(name = "primary_phone", nullable = false)
+    private String primaryPhone;
 
-    @Column(name = "metadata", columnDefinition = "TEXT")
-    private String metadata; // JSON string for extensibility
+    @Column(name = "alternate_phone")
+    private String alternatePhone;
+
+    // Location Info
+    @NotBlank(message = "Address is required")
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "area")
+    private String area;
+
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lon")
+    private Double lon;
+
+    // Personal Info
+    @Column(name = "person_age")
+    private Integer personAge;
+
+    @Column(name = "years_of_experience")
+    private Integer yearsOfExperience;
+
+    // Operational Info
+    @Column(name = "whatsapp_available")
+    private Boolean whatAppAvailable;
+
+    @Column(name = "home_service_available")
+    private Boolean homeServiceAvailable;
+
+    @Column(name = "working_days")
+    private String workingDays; // e.g., "Mon,Tue,Wed,Thu,Fri"
+
+    @Column(name = "working_hours")
+    private String workingHours; // e.g., "10AM-7PM"
+
+    // Metadata
+    @Column(name = "acquisition_source")
+    private String acquisitionSource;
+
+    @Column(name = "added_by")
+    private String addedBy;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    @Column(name = "date_added", updatable = false)
+    private Timestamp dateAdded;
+
+    @Column(name = "meta_data", columnDefinition = "TEXT")
+    private String metaData; // JSON string for extensibility
 }

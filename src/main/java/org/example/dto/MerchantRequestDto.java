@@ -13,21 +13,55 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class MerchantRequestDto {
 
-    @NotBlank(message = "Merchant name is required")
-    private String merchantName;
+    // Business Info
+    @NotBlank(message = "Business name is required")
+    private String businessName;
 
-    @NotBlank(message = "Merchant address is required")
-    private String merchantAddress;
+    private String businessType;
 
-    @NotBlank(message = "Merchant contact number is required")
-    private String merchantContactNumber;
+    @NotBlank(message = "Category is required")
+    private String category;
 
+    private String subCategory;
+
+    // Contact Info
     @NotBlank(message = "Merchant email is required")
     @Email(message = "Invalid email format")
-    private String merchantEmailId;
+    private String merchantEmail;
 
-    @NotBlank(message = "Merchant category is required")
-    private String merchantCategory;
+    @NotBlank(message = "Primary phone is required")
+    private String primaryPhone;
 
-    private String metadata; // Optional JSON string
+    private String alternatePhone;
+
+    // Location Info
+    @NotBlank(message = "Address is required")
+    private String address;
+
+    private String area;
+
+    private Double lat;
+
+    private Double lon;
+
+    // Personal Info
+    private Integer personAge;
+
+    private Integer yearsOfExperience;
+
+    // Operational Info
+    private Boolean whatAppAvailable;
+
+    private Boolean homeServiceAvailable;
+
+    private String workingDays; // e.g., "Mon,Tue,Wed,Thu,Fri"
+
+    private String workingHours; // e.g., "10AM-7PM"
+
+    // Metadata
+    private String acquisitionSource;
+
+    private String addedBy;
+
+    private String metaData; // Optional JSON string
 }

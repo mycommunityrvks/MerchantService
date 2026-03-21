@@ -36,32 +36,74 @@ public class MerchantServiceTest {
     @BeforeEach
     void setUp() {
         requestDto = new MerchantRequestDto();
-        requestDto.setMerchantName("Test Merchant");
-        requestDto.setMerchantAddress("123 Test St");
-        requestDto.setMerchantContactNumber("+1234567890");
-        requestDto.setMerchantEmailId("test@example.com");
-        requestDto.setMerchantCategory("Retail");
-        requestDto.setMetadata("{\"key\": \"value\"}");
+        requestDto.setPrimaryPhone("+1234567890");
+        requestDto.setAlternatePhone("+0987654321");
+        requestDto.setMerchantEmail("merchant@test.com");
+        requestDto.setWhatAppAvailable(true);
+        requestDto.setBusinessName("Test Business");
+        requestDto.setBusinessType("Retail");
+        requestDto.setCategory("Electronics");
+        requestDto.setSubCategory("Mobile");
+        requestDto.setPersonAge(30);
+        requestDto.setYearsOfExperience(5);
+        requestDto.setArea("Downtown");
+        requestDto.setAddress("123 Test St");
+        requestDto.setLat(12.345);
+        requestDto.setLon(67.890);
+        requestDto.setHomeServiceAvailable(true);
+        requestDto.setWorkingDays("Mon,Tue,Wed,Thu,Fri");
+        requestDto.setWorkingHours("10AM-7PM");
+        requestDto.setAcquisitionSource("Online");
+        requestDto.setAddedBy("Admin");
+        requestDto.setMetaData("{\"key\": \"value\"}");
 
         merchant = new Merchant();
         merchant.setMerchantId(1L);
-        merchant.setMerchantName("Test Merchant");
-        merchant.setMerchantAddress("123 Test St");
-        merchant.setMerchantContactNumber("+1234567890");
-        merchant.setMerchantEmailId("test@example.com");
-        merchant.setMerchantCategory("Retail");
-        merchant.setMetadata("{\"key\": \"value\"}");
-        merchant.setCreatedAt(Timestamp.valueOf("2023-01-01 10:00:00"));
+        merchant.setPrimaryPhone("+1234567890");
+        merchant.setAlternatePhone("+0987654321");
+        merchant.setMerchantEmail("merchant@test.com");
+        merchant.setWhatAppAvailable(true);
+        merchant.setBusinessName("Test Business");
+        merchant.setBusinessType("Retail");
+        merchant.setCategory("Electronics");
+        merchant.setSubCategory("Mobile");
+        merchant.setPersonAge(30);
+        merchant.setYearsOfExperience(5);
+        merchant.setArea("Downtown");
+        merchant.setAddress("123 Test St");
+        merchant.setLat(12.345);
+        merchant.setLon(67.890);
+        merchant.setHomeServiceAvailable(true);
+        merchant.setWorkingDays("Mon,Tue,Wed,Thu,Fri");
+        merchant.setWorkingHours("10AM-7PM");
+        merchant.setAcquisitionSource("Online");
+        merchant.setDateAdded(Timestamp.valueOf("2023-01-01 10:00:00"));
+        merchant.setAddedBy("Admin");
+        merchant.setMetaData("{\"key\": \"value\"}");
 
         responseDto = new MerchantResponseDto();
         responseDto.setMerchantId(1L);
-        responseDto.setMerchantName("Test Merchant");
-        responseDto.setMerchantAddress("123 Test St");
-        responseDto.setMerchantContactNumber("+1234567890");
-        responseDto.setMerchantEmailId("test@example.com");
-        responseDto.setMerchantCategory("Retail");
-        responseDto.setMetadata("{\"key\": \"value\"}");
-        responseDto.setCreatedAt(Timestamp.valueOf("2023-01-01 10:00:00"));
+        responseDto.setPrimaryPhone("+1234567890");
+        responseDto.setAlternatePhone("+0987654321");
+        responseDto.setMerchantEmail("merchant@test.com");
+        responseDto.setWhatAppAvailable(true);
+        responseDto.setBusinessName("Test Business");
+        responseDto.setBusinessType("Retail");
+        responseDto.setCategory("Electronics");
+        responseDto.setSubCategory("Mobile");
+        responseDto.setPersonAge(30);
+        responseDto.setYearsOfExperience(5);
+        responseDto.setArea("Downtown");
+        responseDto.setAddress("123 Test St");
+        responseDto.setLat(12.345);
+        responseDto.setLon(67.890);
+        responseDto.setHomeServiceAvailable(true);
+        responseDto.setWorkingDays("Mon,Tue,Wed,Thu,Fri");
+        responseDto.setWorkingHours("10AM-7PM");
+        responseDto.setAcquisitionSource("Online");
+        responseDto.setDateAdded(Timestamp.valueOf("2023-01-01 10:00:00"));
+        responseDto.setAddedBy("Admin");
+        responseDto.setMetaData("{\"key\": \"value\"}");
     }
 
     @Test
@@ -71,8 +113,8 @@ public class MerchantServiceTest {
         MerchantResponseDto result = merchantService.createMerchant(requestDto);
 
         assertNotNull(result);
-        assertEquals("Test Merchant", result.getMerchantName());
-        assertEquals("test@example.com", result.getMerchantEmailId());
+        assertEquals("Test Business", result.getBusinessName());
+        assertEquals("merchant@test.com", result.getMerchantEmail());
         verify(merchantRepository, times(1)).save(any(Merchant.class));
     }
 
@@ -85,7 +127,7 @@ public class MerchantServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("Test Merchant", result.get(0).getMerchantName());
+        assertEquals("Test Business", result.get(0).getBusinessName());
         verify(merchantRepository, times(1)).findAll();
     }
 
@@ -96,7 +138,7 @@ public class MerchantServiceTest {
         MerchantResponseDto result = merchantService.getMerchantById(1L);
 
         assertNotNull(result);
-        assertEquals("Test Merchant", result.getMerchantName());
+        assertEquals("Test Business", result.getBusinessName());
         verify(merchantRepository, times(1)).findById(1L);
     }
 
@@ -120,7 +162,7 @@ public class MerchantServiceTest {
         MerchantResponseDto result = merchantService.updateMerchant(1L, requestDto);
 
         assertNotNull(result);
-        assertEquals("Test Merchant", result.getMerchantName());
+        assertEquals("Test Business", result.getBusinessName());
         verify(merchantRepository, times(1)).findById(1L);
         verify(merchantRepository, times(1)).save(any(Merchant.class));
     }

@@ -12,11 +12,37 @@ import java.sql.Timestamp;
 public class MerchantResponseDto {
 
     private Long merchantId;
-    private String merchantName;
-    private String merchantAddress;
-    private String merchantContactNumber;
-    private String merchantEmailId;
-    private String merchantCategory;
-    private String metadata;
-    private Timestamp createdAt;
+
+    // Business Info
+    private String businessName;
+    private String businessType;
+    private String category;
+    private String subCategory;
+
+    // Contact Info
+    private String merchantEmail;
+    private String primaryPhone;
+    private String alternatePhone;
+
+    // Location Info
+    private String address;
+    private String area;
+    private Double lat;
+    private Double lon;
+
+    // Personal Info
+    private Integer personAge;
+    private Integer yearsOfExperience;
+
+    // Operational Info
+    private Boolean whatAppAvailable;
+    private Boolean homeServiceAvailable;
+    private String workingDays;
+    private String workingHours;
+
+    // Metadata
+    private String acquisitionSource;
+    private String addedBy;
+    private Timestamp dateAdded;
+    private String metaData;
 }
