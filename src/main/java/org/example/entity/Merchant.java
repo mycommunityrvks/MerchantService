@@ -51,8 +51,8 @@ public class Merchant {
     private String alternatePhone;
 
     @NotBlank(message = "Address is required")
-    @Column(name = "merchant_address", nullable = false)
-    private String merchantAddress;
+    @Column(name = "address", nullable = false)
+    private String address;
 
     @Column(name = "area")
     private String area;
