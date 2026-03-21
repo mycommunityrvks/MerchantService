@@ -50,10 +50,9 @@ public class Merchant {
     @Column(name = "alternate_phone")
     private String alternatePhone;
 
-    // Location Info
     @NotBlank(message = "Address is required")
-    @Column(name = "address", nullable = false)
-    private String address;
+    @Column(name = "merchant_address", nullable = false)
+    private String merchantAddress;
 
     @Column(name = "area")
     private String area;

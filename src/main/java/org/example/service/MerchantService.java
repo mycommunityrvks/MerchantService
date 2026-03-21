@@ -45,7 +45,7 @@ public class MerchantService {
         existingMerchant.setCategory(requestDto.getCategory());
         existingMerchant.setSubCategory(requestDto.getSubCategory());
         existingMerchant.setBusinessType(requestDto.getBusinessType());
-        existingMerchant.setAddress(requestDto.getAddress());
+        existingMerchant.setMerchantAddress(requestDto.getAddress());
         existingMerchant.setArea(requestDto.getArea());
         existingMerchant.setLat(requestDto.getLat());
         existingMerchant.setLon(requestDto.getLon());
@@ -78,7 +78,7 @@ public class MerchantService {
         merchant.setCategory(dto.getCategory());
         merchant.setSubCategory(dto.getSubCategory());
         merchant.setBusinessType(dto.getBusinessType());
-        merchant.setAddress(dto.getAddress());
+        merchant.setMerchantAddress(dto.getAddress());
         merchant.setArea(dto.getArea());
         merchant.setLat(dto.getLat());
         merchant.setLon(dto.getLon());
@@ -104,7 +104,7 @@ public class MerchantService {
                 merchant.getMerchantEmail(),
                 merchant.getPrimaryPhone(),
                 merchant.getAlternatePhone(),
-                merchant.getAddress(),
+                merchant.getMerchantAddress(),
                 merchant.getArea(),
                 merchant.getLat(),
                 merchant.getLon(),
