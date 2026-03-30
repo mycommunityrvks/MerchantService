@@ -39,7 +39,11 @@ public class MerchantService {
                 .orElseThrow(() -> new RuntimeException("Merchant not found with id: " + id));
         // Update fields
         existingMerchant.setBusinessName(requestDto.getBusinessName());
-        existingMerchant.setMerchantEmail(requestDto.getMerchantEmail());
+        if (requestDto.getMerchantEmail() != null && requestDto.getMerchantEmail().isBlank()) {
+            existingMerchant.setMerchantEmail(null);
+        } else {
+            existingMerchant.setMerchantEmail(requestDto.getMerchantEmail());
+        }
         existingMerchant.setPrimaryPhone(requestDto.getPrimaryPhone());
         existingMerchant.setAlternatePhone(requestDto.getAlternatePhone());
         existingMerchant.setCategory(requestDto.getCategory());
@@ -72,7 +76,11 @@ public class MerchantService {
     private Merchant mapToEntity(MerchantRequestDto dto) {
         Merchant merchant = new Merchant();
         merchant.setBusinessName(dto.getBusinessName());
-        merchant.setMerchantEmail(dto.getMerchantEmail());
+        if (dto.getMerchantEmail() != null && dto.getMerchantEmail().isBlank()) {
+            merchant.setMerchantEmail(null);
+        } else {
+            merchant.setMerchantEmail(dto.getMerchantEmail());
+        }
         merchant.setPrimaryPhone(dto.getPrimaryPhone());
         merchant.setAlternatePhone(dto.getAlternatePhone());
         merchant.setCategory(dto.getCategory());
