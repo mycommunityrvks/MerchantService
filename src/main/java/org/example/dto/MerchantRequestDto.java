@@ -13,6 +13,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class MerchantRequestDto {
 
+    // Optional: if provided, this ID will be used; otherwise the database will auto-generate one
+    private Long merchantId;
+
     // Business Info
     @NotBlank(message = "Business name is required")
     private String businessName;

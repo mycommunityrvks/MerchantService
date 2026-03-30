@@ -17,6 +17,9 @@ public class MerchantService {
     private final MerchantRepository merchantRepository;
 
     public MerchantResponseDto createMerchant(MerchantRequestDto requestDto) {
+        if (requestDto.getMerchantId() != null && merchantRepository.existsById(requestDto.getMerchantId())) {
+            throw new RuntimeException("Merchant already exists with id: " + requestDto.getMerchantId());
+        }
         Merchant merchant = mapToEntity(requestDto);
         Merchant savedMerchant = merchantRepository.save(merchant);
         return mapToResponseDto(savedMerchant);
@@ -71,6 +74,9 @@ public class MerchantService {
 
     private Merchant mapToEntity(MerchantRequestDto dto) {
         Merchant merchant = new Merchant();
+        if (dto.getMerchantId() != null) {
+            merchant.setMerchantId(dto.getMerchantId());
+        }
         merchant.setBusinessName(dto.getBusinessName());
         merchant.setMerchantEmail(dto.getMerchantEmail());
         merchant.setPrimaryPhone(dto.getPrimaryPhone());

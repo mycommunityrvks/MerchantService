@@ -7,6 +7,7 @@ import org.example.repository.MerchantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -116,6 +117,52 @@ public class MerchantServiceTest {
         assertEquals("Test Business", result.getBusinessName());
         assertEquals("merchant@test.com", result.getMerchantEmail());
         verify(merchantRepository, times(1)).save(any(Merchant.class));
+    }
+
+    @Test
+    void createMerchant_ShouldUseProvidedMerchantId_WhenMerchantIdIsPresent() {
+        requestDto.setMerchantId(42L);
+        Merchant merchantWithExplicitId = new Merchant();
+        merchantWithExplicitId.setMerchantId(42L);
+        merchantWithExplicitId.setBusinessName("Test Business");
+        merchantWithExplicitId.setMerchantEmail("merchant@test.com");
+        when(merchantRepository.existsById(42L)).thenReturn(false);
+        when(merchantRepository.save(any(Merchant.class))).thenReturn(merchantWithExplicitId);
+
+        ArgumentCaptor<Merchant> captor = ArgumentCaptor.forClass(Merchant.class);
+        MerchantResponseDto result = merchantService.createMerchant(requestDto);
+
+        assertNotNull(result);
+        assertEquals(42L, result.getMerchantId());
+        verify(merchantRepository, times(1)).save(captor.capture());
+        assertEquals(42L, captor.getValue().getMerchantId());
+    }
+
+    @Test
+    void createMerchant_ShouldAutoGenerateMerchantId_WhenMerchantIdIsAbsent() {
+        requestDto.setMerchantId(null);
+        when(merchantRepository.save(any(Merchant.class))).thenReturn(merchant);
+
+        ArgumentCaptor<Merchant> captor = ArgumentCaptor.forClass(Merchant.class);
+        MerchantResponseDto result = merchantService.createMerchant(requestDto);
+
+        assertNotNull(result);
+        assertNotNull(result.getMerchantId());
+        verify(merchantRepository, times(1)).save(captor.capture());
+        assertNull(captor.getValue().getMerchantId());
+    }
+
+    @Test
+    void createMerchant_ShouldThrowException_WhenProvidedMerchantIdAlreadyExists() {
+        requestDto.setMerchantId(1L);
+        when(merchantRepository.existsById(1L)).thenReturn(true);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            merchantService.createMerchant(requestDto);
+        });
+
+        assertEquals("Merchant already exists with id: 1", exception.getMessage());
+        verify(merchantRepository, never()).save(any(Merchant.class));
     }
 
     @Test
