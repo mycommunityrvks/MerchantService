@@ -38,9 +38,8 @@ public class Merchant {
     private String subCategory;
 
     // Contact Info
-    @NotBlank(message = "Merchant email is required")
     @Email(message = "Invalid email format")
-    @Column(name = "merchant_email", nullable = false, unique = true)
+    @Column(name = "merchant_email", nullable = true, unique = true)
     private String merchantEmail;
 
     @NotBlank(message = "Primary phone is required")

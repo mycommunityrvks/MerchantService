@@ -25,7 +25,6 @@ public class MerchantRequestDto {
     private String subCategory;
 
     // Contact Info
-    @NotBlank(message = "Merchant email is required")
     @Email(message = "Invalid email format")
     private String merchantEmail;
 

@@ -119,6 +119,31 @@ public class MerchantServiceTest {
     }
 
     @Test
+    void createMerchant_ShouldReturnCreatedMerchant_WhenEmailIsAbsent() {
+        Merchant merchantWithoutEmail = new Merchant();
+        merchantWithoutEmail.setMerchantId(2L);
+        merchantWithoutEmail.setBusinessName("Test Business");
+        merchantWithoutEmail.setCategory("Electronics");
+        merchantWithoutEmail.setPrimaryPhone("+1234567890");
+        merchantWithoutEmail.setAddress("123 Test St");
+
+        MerchantRequestDto requestWithoutEmail = new MerchantRequestDto();
+        requestWithoutEmail.setBusinessName("Test Business");
+        requestWithoutEmail.setCategory("Electronics");
+        requestWithoutEmail.setPrimaryPhone("+1234567890");
+        requestWithoutEmail.setAddress("123 Test St");
+
+        when(merchantRepository.save(any(Merchant.class))).thenReturn(merchantWithoutEmail);
+
+        MerchantResponseDto result = merchantService.createMerchant(requestWithoutEmail);
+
+        assertNotNull(result);
+        assertEquals("Test Business", result.getBusinessName());
+        assertNull(result.getMerchantEmail());
+        verify(merchantRepository, times(1)).save(any(Merchant.class));
+    }
+
+    @Test
     void getAllMerchants_ShouldReturnListOfMerchants() {
         List<Merchant> merchants = Arrays.asList(merchant);
         when(merchantRepository.findAll()).thenReturn(merchants);
