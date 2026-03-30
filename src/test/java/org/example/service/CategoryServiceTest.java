@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dto.CategoryRequestDto;
 import org.example.dto.CategoryResponseDto;
 import org.example.entity.Category;
+import org.example.exception.CategoryNotFoundException;
 import org.example.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,10 +103,10 @@ public class CategoryServiceTest {
 
         when(categoryRepository.findById(99L)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.createCategory(requestDto));
 
-        assertEquals("Parent category not found with id: 99", exception.getMessage());
+        assertEquals("Category not found with id: 99", exception.getMessage());
         verify(categoryRepository, never()).save(any(Category.class));
     }
 
@@ -160,7 +161,7 @@ public class CategoryServiceTest {
     void getCategoryById_ShouldThrowException_WhenCategoryNotFound() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.getCategoryById(1L));
 
         assertEquals("Category not found with id: 1", exception.getMessage());
@@ -193,7 +194,7 @@ public class CategoryServiceTest {
         CategoryRequestDto requestDto = new CategoryRequestDto("Electronics", null);
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.updateCategory(1L, requestDto));
 
         assertEquals("Category not found with id: 1", exception.getMessage());
@@ -215,7 +216,7 @@ public class CategoryServiceTest {
     void deleteCategory_ShouldThrowException_WhenCategoryNotFound() {
         when(categoryRepository.existsById(1L)).thenReturn(false);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.deleteCategory(1L));
 
         assertEquals("Category not found with id: 1", exception.getMessage());

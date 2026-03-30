@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.CategoryRequestDto;
 import org.example.dto.CategoryResponseDto;
 import org.example.entity.Category;
+import org.example.exception.CategoryNotFoundException;
 import org.example.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,7 @@ public class CategoryService {
         Category category = new Category();
         category.setName(requestDto.getName());
         if (requestDto.getParentCategoryId() != null) {
-            Category parent = categoryRepository.findById(requestDto.getParentCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Parent category not found with id: " + requestDto.getParentCategoryId()));
-            category.setParentCategory(parent);
+            category.setParentCategory(findCategoryById(requestDto.getParentCategoryId()));
         }
         Category saved = categoryRepository.save(category);
         return mapToResponseDto(saved);
@@ -35,19 +34,14 @@ public class CategoryService {
     }
 
     public CategoryResponseDto getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-        return mapToResponseDto(category);
+        return mapToResponseDto(findCategoryById(id));
     }
 
     public CategoryResponseDto updateCategory(Long id, CategoryRequestDto requestDto) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+        Category category = findCategoryById(id);
         category.setName(requestDto.getName());
         if (requestDto.getParentCategoryId() != null) {
-            Category parent = categoryRepository.findById(requestDto.getParentCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Parent category not found with id: " + requestDto.getParentCategoryId()));
-            category.setParentCategory(parent);
+            category.setParentCategory(findCategoryById(requestDto.getParentCategoryId()));
         } else {
             category.setParentCategory(null);
         }
@@ -57,9 +51,14 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new CategoryNotFoundException("Category not found with id: " + id);
         }
         categoryRepository.deleteById(id);
+    }
+
+    private Category findCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
     }
 
     private CategoryResponseDto mapToResponseDto(Category category) {
