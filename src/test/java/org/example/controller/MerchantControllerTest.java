@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -101,6 +102,35 @@ public class MerchantControllerTest {
                 .andExpect(jsonPath("$.merchantId").value(1L))
                 .andExpect(jsonPath("$.businessName").value("Test Business"))
                 .andExpect(jsonPath("$.merchantEmail").value("merchant@test.com"));
+
+        verify(merchantService, times(1)).createMerchant(any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void createMerchant_ShouldReturnCreatedMerchant_WhenEmailIsAbsent() throws Exception {
+        MerchantRequestDto requestWithoutEmail = new MerchantRequestDto();
+        requestWithoutEmail.setBusinessName("Test Business");
+        requestWithoutEmail.setCategory("Electronics");
+        requestWithoutEmail.setPrimaryPhone("+1234567890");
+        requestWithoutEmail.setAddress("123 Test St");
+
+        MerchantResponseDto responseWithoutEmail = new MerchantResponseDto();
+        responseWithoutEmail.setMerchantId(2L);
+        responseWithoutEmail.setBusinessName("Test Business");
+        responseWithoutEmail.setCategory("Electronics");
+        responseWithoutEmail.setPrimaryPhone("+1234567890");
+        responseWithoutEmail.setAddress("123 Test St");
+        responseWithoutEmail.setMerchantEmail(null);
+
+        when(merchantService.createMerchant(any(MerchantRequestDto.class))).thenReturn(responseWithoutEmail);
+
+        mockMvc.perform(post("/api/merchants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestWithoutEmail))
+                .with(csrf()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.merchantId").value(2L))
+                .andExpect(jsonPath("$.merchantEmail").value(nullValue()));
 
         verify(merchantService, times(1)).createMerchant(any(MerchantRequestDto.class));
     }
