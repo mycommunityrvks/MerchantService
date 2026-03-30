@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.MerchantRequestDto;
 import org.example.dto.MerchantResponseDto;
 import org.example.entity.Merchant;
+import org.example.exception.DuplicateResourceException;
 import org.example.repository.MerchantRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class MerchantService {
     private final MerchantRepository merchantRepository;
 
     public MerchantResponseDto createMerchant(MerchantRequestDto requestDto) {
+        if (merchantRepository.existsByPrimaryPhone(requestDto.getPrimaryPhone())) {
+            throw new DuplicateResourceException("Merchant with phone number " + requestDto.getPrimaryPhone() + " already exists");
+        }
         Merchant merchant = mapToEntity(requestDto);
         Merchant savedMerchant = merchantRepository.save(merchant);
         return mapToResponseDto(savedMerchant);
@@ -37,6 +41,11 @@ public class MerchantService {
     public MerchantResponseDto updateMerchant(Long id, MerchantRequestDto requestDto) {
         Merchant existingMerchant = merchantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Merchant not found with id: " + id));
+        merchantRepository.findByPrimaryPhone(requestDto.getPrimaryPhone())
+                .filter(m -> !m.getMerchantId().equals(id))
+                .ifPresent(m -> {
+                    throw new DuplicateResourceException("Merchant with phone number " + requestDto.getPrimaryPhone() + " already exists");
+                });
         // Update fields
         existingMerchant.setBusinessName(requestDto.getBusinessName());
         if (requestDto.getMerchantEmail() != null && requestDto.getMerchantEmail().isBlank()) {

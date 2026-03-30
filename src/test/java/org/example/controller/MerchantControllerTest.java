@@ -3,6 +3,7 @@ package org.example.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dto.MerchantRequestDto;
 import org.example.dto.MerchantResponseDto;
+import org.example.exception.DuplicateResourceException;
 import org.example.service.MerchantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -136,6 +137,20 @@ public class MerchantControllerTest {
     }
 
     @Test
+    void createMerchant_ShouldReturnConflict_WhenPhoneAlreadyExists() throws Exception {
+        when(merchantService.createMerchant(any(MerchantRequestDto.class)))
+                .thenThrow(new DuplicateResourceException("Merchant with phone number +1234567890 already exists"));
+
+        mockMvc.perform(post("/api/merchants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+                .with(csrf()))
+                .andExpect(status().isConflict());
+
+        verify(merchantService, times(1)).createMerchant(any(MerchantRequestDto.class));
+    }
+
+    @Test
     void createMerchant_ShouldReturnBadRequest_WhenValidationFails() throws Exception {
         MerchantRequestDto invalidRequest = new MerchantRequestDto();
         invalidRequest.setBusinessName(""); // Invalid: blank name
@@ -209,6 +224,20 @@ public class MerchantControllerTest {
                 .content(objectMapper.writeValueAsString(requestDto))
                 .with(csrf()))
                 .andExpect(status().isNotFound());
+
+        verify(merchantService, times(1)).updateMerchant(eq(1L), any(MerchantRequestDto.class));
+    }
+
+    @Test
+    void updateMerchant_ShouldReturnConflict_WhenPhoneAlreadyUsedByAnotherMerchant() throws Exception {
+        when(merchantService.updateMerchant(eq(1L), any(MerchantRequestDto.class)))
+                .thenThrow(new DuplicateResourceException("Merchant with phone number +1234567890 already exists"));
+
+        mockMvc.perform(put("/api/merchants/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+                .with(csrf()))
+                .andExpect(status().isConflict());
 
         verify(merchantService, times(1)).updateMerchant(eq(1L), any(MerchantRequestDto.class));
     }

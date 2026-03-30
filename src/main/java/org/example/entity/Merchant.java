@@ -43,7 +43,7 @@ public class Merchant {
     private String merchantEmail;
 
     @NotBlank(message = "Primary phone is required")
-    @Column(name = "primary_phone", nullable = false)
+    @Column(name = "primary_phone", nullable = false, unique = true)
     private String primaryPhone;
 
     @Column(name = "alternate_phone")

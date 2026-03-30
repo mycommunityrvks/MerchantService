@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dto.MerchantRequestDto;
 import org.example.dto.MerchantResponseDto;
 import org.example.entity.Merchant;
+import org.example.exception.DuplicateResourceException;
 import org.example.repository.MerchantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,6 +109,7 @@ public class MerchantServiceTest {
 
     @Test
     void createMerchant_ShouldReturnCreatedMerchant() {
+        when(merchantRepository.existsByPrimaryPhone(requestDto.getPrimaryPhone())).thenReturn(false);
         when(merchantRepository.save(any(Merchant.class))).thenReturn(merchant);
 
         MerchantResponseDto result = merchantService.createMerchant(requestDto);
@@ -133,6 +135,7 @@ public class MerchantServiceTest {
         requestWithoutEmail.setPrimaryPhone("+1234567890");
         requestWithoutEmail.setAddress("123 Test St");
 
+        when(merchantRepository.existsByPrimaryPhone("+1234567890")).thenReturn(false);
         when(merchantRepository.save(any(Merchant.class))).thenReturn(merchantWithoutEmail);
 
         MerchantResponseDto result = merchantService.createMerchant(requestWithoutEmail);
@@ -141,6 +144,19 @@ public class MerchantServiceTest {
         assertEquals("Test Business", result.getBusinessName());
         assertNull(result.getMerchantEmail());
         verify(merchantRepository, times(1)).save(any(Merchant.class));
+    }
+
+    @Test
+    void createMerchant_ShouldThrowException_WhenPhoneAlreadyExists() {
+        when(merchantRepository.existsByPrimaryPhone(requestDto.getPrimaryPhone())).thenReturn(true);
+
+        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> {
+            merchantService.createMerchant(requestDto);
+        });
+
+        assertEquals("Merchant with phone number " + requestDto.getPrimaryPhone() + " already exists", exception.getMessage());
+        verify(merchantRepository, times(1)).existsByPrimaryPhone(requestDto.getPrimaryPhone());
+        verify(merchantRepository, never()).save(any(Merchant.class));
     }
 
     @Test
@@ -182,6 +198,7 @@ public class MerchantServiceTest {
     @Test
     void updateMerchant_ShouldReturnUpdatedMerchant() {
         when(merchantRepository.findById(1L)).thenReturn(Optional.of(merchant));
+        when(merchantRepository.findByPrimaryPhone(requestDto.getPrimaryPhone())).thenReturn(Optional.of(merchant));
         when(merchantRepository.save(any(Merchant.class))).thenReturn(merchant);
 
         MerchantResponseDto result = merchantService.updateMerchant(1L, requestDto);
@@ -190,6 +207,23 @@ public class MerchantServiceTest {
         assertEquals("Test Business", result.getBusinessName());
         verify(merchantRepository, times(1)).findById(1L);
         verify(merchantRepository, times(1)).save(any(Merchant.class));
+    }
+
+    @Test
+    void updateMerchant_ShouldThrowException_WhenPhoneAlreadyUsedByAnotherMerchant() {
+        Merchant anotherMerchant = new Merchant();
+        anotherMerchant.setMerchantId(99L);
+        anotherMerchant.setPrimaryPhone(requestDto.getPrimaryPhone());
+
+        when(merchantRepository.findById(1L)).thenReturn(Optional.of(merchant));
+        when(merchantRepository.findByPrimaryPhone(requestDto.getPrimaryPhone())).thenReturn(Optional.of(anotherMerchant));
+
+        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> {
+            merchantService.updateMerchant(1L, requestDto);
+        });
+
+        assertEquals("Merchant with phone number " + requestDto.getPrimaryPhone() + " already exists", exception.getMessage());
+        verify(merchantRepository, never()).save(any(Merchant.class));
     }
 
     @Test
